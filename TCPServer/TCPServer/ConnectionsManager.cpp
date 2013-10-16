@@ -11,48 +11,58 @@
 
 	int ConnectionsManager::disconIndexes[MAX_CONNECTIONS];
 
-	void ConnectionsManager::disconnectClient(Client * pClient){	
-		for(int i = 0; i < MAX_CONNECTIONS; i++){
-			if(connections[i] == pClient){				
-				delete connections[i];
-				connections[i] = 0;
+	Client * ConnectionsManager::get(int index){
+		if(index >= 0 && index < MAX_CONNECTIONS){
+			return connections[index];
+		}
+		return 0;
+	}
+
+	void ConnectionsManager::disconnectClient(int index){					
+		if(index >= 0 && index < MAX_CONNECTIONS){
+			if(connections[index] != 0){				
+				delete connections[index];
+				connections[index] = 0;
 
 				// add index to disconnected
-				disconIndexes[disconNum] = i;
+				disconIndexes[disconNum] = index;
 				disconNum++;
 				printf("Client disconected.\n");
 			}
-		}
+		}		
 	}
 
 	bool ConnectionsManager::canConnect(){		
 		return ((connIndex + 1) >= MAX_CONNECTIONS) ? false : true;
 	}	
 
-	void ConnectionsManager::addConnection(Client * c){
+	int ConnectionsManager::addConnection(SOCKET sock, Server * serv, char * p){
 		if(canConnect() == false){
-			printf("Connections limit has been reached.\nDiscard connection.\n");
-			c->disconect();
-			return;		
-		} else {			
+			printf("Connections limit has been reached.\nDiscard connection.\n");			
+			return -1;		
+		} else {		
+			int ret = -2;
 			int discIndex = disconIndexes[disconNum];			
 			if(connections[discIndex] == 0){
 				// use free index				
-				connections[discIndex] = c;						
+				connections[discIndex] = new Client(sock, serv, p, discIndex);						
 				disconNum--;
+				ret = discIndex;
 			} else {
 				// use new index
-				connections[connIndex] = c;
+				connections[connIndex] = new Client(sock, serv, p, connIndex);	
+				ret = connIndex;
 				connIndex += 1;
 			}			
 			printf("New connection.\n");
-		}					
+			return ret;
+		}
+		return -3;
 	}
+	
 
 	void ConnectionsManager::disconnectAllClients(){
 		for(int i = 0; i < MAX_CONNECTIONS; i++){
-			if(connections[i] != NULL && connections[i] != 0){				
-				delete connections[i];				
-			}
+			disconnectClient(i);
 		}	
 	}

@@ -2,7 +2,9 @@
 #ifndef __ConnectionsManager_H_INCLUDED__   
 #define __ConnectionsManager_H_INCLUDED__   
 
-#include "service.h"
+#include "server.h"
+#include "services.h"
+#include "client.h"
 
 class ConnectionsManager {
 	
@@ -17,13 +19,15 @@ public:
 
 	static int connIndex;	
 
-	static void disconnectClient(Client *);
+	static void disconnectClient(int index);
 
 	static void disconnectAllClients();
 
 	static bool canConnect();	
 
-	static void addConnection(Client *);	
+	static int addConnection(SOCKET sock, Server * serv, char * p);	
+
+	static Client * get(int index);
 
 };
 

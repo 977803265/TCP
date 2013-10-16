@@ -1,6 +1,6 @@
 
 #include "server.h"
-#include "service.h"
+#include "services.h"
 #include "ConnectionsManager.h"
 
 // Need to link with Ws2_32.lib
@@ -142,12 +142,12 @@ public:
 				}
 								
 				if(ConnectionsManager::suspend == false){
-					// create separate thread to work with client
-					HANDLE thread; DWORD threadId;
-					Client * pClient = new Client(clientSocket, this, port);
-					ConnectionsManager::addConnection(pClient);					
-					thread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Services::serve, 
-						(LPVOID)pClient, 0, &threadId); 									
+					// create separate thread to work with client									
+					int index = ConnectionsManager::addConnection(clientSocket, this, port);			
+					if(index >= 0){						
+						CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Services::serve, (LPVOID)index, 0, 0); 
+					}
+														
 				} else {
 					printf("Server suspended.\nPlease try again in a while.");
 					closesocket(clientSocket);
@@ -160,17 +160,19 @@ public:
 	}
 };
 
+
 int main(int argc, char * argv[]) 
-{			
-	
+{				
+	/*
 	if(argc != 2){
 		printf("Specify the service as first argument.\n");
 		return 1;
 	}	
 
 	Server server(argv[1]);	
-		
-	//Server server("2811");	
+	*/
+
+	Server server("2811");	
 	server.run();
 	ConnectionsManager::disconnectAllClients();
 	return 0;

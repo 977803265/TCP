@@ -1,15 +1,15 @@
 
-#include "service.h"
+#include "services.h"
 #include "server.h"
 #include "ConnectionsManager.h"
 
 
-Client::Client(SOCKET sock, Server * serv, int p) 
-	: socket(sock), server(serv), port(p){
+Client::Client(SOCKET sock, Server * serv, int p, int i) 
+	: socket(sock), server(serv), port(p), index(i){
 }
 
-Client::Client(SOCKET sock, Server * serv, char * p) 
-	: socket(sock), server(serv){
+Client::Client(SOCKET sock, Server * serv, char * p, int i) 
+	: socket(sock), server(serv), index(i){
 		port = atoi(p);
 }
 
@@ -29,7 +29,7 @@ bool Client::isValid(){
 
 void Client::disconect(){	
 	closesocket(socket);
-	ConnectionsManager::disconnectClient(this);
+	ConnectionsManager::disconnectClient(index);
 }
 
 int Client::getService(){
