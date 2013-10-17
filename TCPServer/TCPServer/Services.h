@@ -11,7 +11,6 @@ class Services {
 		static void echo(int index);
 
 		static void process(int readPerCall, char * buff, int index, BOOL & read);
-
 	public:
 		static void serve(LPVOID lpParam);
 };

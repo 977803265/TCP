@@ -18,46 +18,41 @@
 		return 0;
 	}
 
+	bool ConnectionsManager::canConnect(){		
+		return ((connIndex + 1) >= MAX_CONNECTIONS) ? false : true;
+	}	
+
 	void ConnectionsManager::disconnectClient(int index){					
 		if(index >= 0 && index < MAX_CONNECTIONS){
 			if(connections[index] != 0){				
 				delete connections[index];
 				connections[index] = 0;
 
-				// add index to disconnected
-				disconIndexes[disconNum] = index;
-				disconNum++;
+				// add index to disconnected				
+				disconIndexes[++disconNum] = index;				
 				printf("Client disconected.\n");
 			}
 		}		
 	}
 
-	bool ConnectionsManager::canConnect(){		
-		return ((connIndex + 1) >= MAX_CONNECTIONS) ? false : true;
-	}	
-
 	int ConnectionsManager::addConnection(SOCKET sock, Server * serv, char * p){
 		if(canConnect() == false){
-			printf("Connections limit has been reached.\nDiscard connection.\n");			
-			return -1;		
+			printf("Connections limit has been reached.\nDiscard connection.\n");						
 		} else {		
-			int ret = -2;
-			int discIndex = disconIndexes[disconNum];			
-			if(connections[discIndex] == 0){
+			int ret;			
+			if(disconNum > 0){
 				// use free index				
-				connections[discIndex] = new Client(sock, serv, p, discIndex);						
-				disconNum--;
-				ret = discIndex;
+				int discIndex = ret = disconIndexes[disconNum--];			
+				connections[discIndex] = new Client(sock, serv, p, discIndex);														
 			} else {
 				// use new index
 				connections[connIndex] = new Client(sock, serv, p, connIndex);	
-				ret = connIndex;
-				connIndex += 1;
+				ret = connIndex++;				
 			}			
 			printf("New connection.\n");
 			return ret;
 		}
-		return -3;
+		return -1;
 	}
 	
 

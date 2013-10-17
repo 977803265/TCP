@@ -33,7 +33,12 @@ void Services::serve(LPVOID lpParam){
 void Services::echo(int index){			
 	ConnectionsManager::get(index)->makeNonBlocking();	
 	int bytesRead;	
-	char readBuf[DEFAULT_BUFLEN];		
+	char readBuf[DEFAULT_BUFLEN];	
+	
+	// say welcome
+	ConnectionsManager::get(index)
+					->write(WELCOME);
+
 		
 	BOOL read = true;
 	
@@ -44,15 +49,14 @@ void Services::echo(int index){
 		if (ConnectionsManager::get(index)->canRead()) {
 			if(ConnectionsManager::get(index)->isInReadSet()){
 				bytesRead = ConnectionsManager::get(index)->read(readBuf, DEFAULT_BUFLEN);				
-				if (bytesRead > 0) {
-
+				if (bytesRead > 0) {					
 				    if(bytesRead == 1){
 						ConnectionsManager::get(index)
 							->write("\rTelnet is not supported.\n\rPlease use the normal client.\n\r");
 						ConnectionsManager::get(index)
 							->write("Good by.\n\r");								
 						read = false;						
-					} else {
+					} else {					
 						readBuf[bytesRead] = '\0';
 						process(bytesRead, readBuf, index, read);					
 					}
@@ -68,7 +72,7 @@ void Services::echo(int index){
 
 void Services::process(int bytesRead, char * cmd, 
 					   int index, BOOL & read){		
-
+	
 	if(strncmp(cmd, "QUIT", 4) == 0){
 		// Send good by								
 		ConnectionsManager::get(index)
@@ -85,9 +89,8 @@ void Services::process(int bytesRead, char * cmd,
 }
 
 
-
-
 void Services::hello(int index){	
+	// Say hello and good by								
 	ConnectionsManager::get(index)
-		->write("Hello client. I am an TCP Server.\n");	
+		->write("Hello and good by.\n");	
 }
