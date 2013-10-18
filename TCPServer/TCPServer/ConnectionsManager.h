@@ -6,6 +6,8 @@
 #include "services.h"
 #include "client.h"
 
+#define MAX_CONNECTIONS 3
+
 class ConnectionsManager {
 	
 public:	

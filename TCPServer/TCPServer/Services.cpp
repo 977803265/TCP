@@ -6,6 +6,11 @@
 void Services::serve(LPVOID lpParam){
 	// each thread has its own client
 	int index = (int) lpParam;		
+
+	// say welcome
+	ConnectionsManager::get(index)
+					->write(WELCOME);
+
 	switch (ConnectionsManager::get(index)->getService()) {
 	  case HELLO_SERVICE:
 		Services::hello(index);
@@ -34,12 +39,7 @@ void Services::echo(int index){
 	ConnectionsManager::get(index)->makeNonBlocking();	
 	int bytesRead;	
 	char readBuf[DEFAULT_BUFLEN];	
-	
-	// say welcome
-	ConnectionsManager::get(index)
-					->write(WELCOME);
-
-		
+			
 	BOOL read = true;
 	
 	// speak cycle

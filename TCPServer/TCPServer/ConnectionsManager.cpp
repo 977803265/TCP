@@ -3,13 +3,13 @@
 
 	Client * ConnectionsManager::connections[MAX_CONNECTIONS];
 
+	int ConnectionsManager::disconIndexes[MAX_CONNECTIONS];
+
 	int ConnectionsManager::connIndex = 0;	
 
 	bool ConnectionsManager::suspend = false;
 
-	int ConnectionsManager::disconNum = 0;
-
-	int ConnectionsManager::disconIndexes[MAX_CONNECTIONS];
+	int ConnectionsManager::disconNum = 0;	
 
 	Client * ConnectionsManager::get(int index){
 		if(index >= 0 && index < MAX_CONNECTIONS){
@@ -19,7 +19,7 @@
 	}
 
 	bool ConnectionsManager::canConnect(){		
-		return ((connIndex + 1) >= MAX_CONNECTIONS) ? false : true;
+		return ((connIndex - disconNum) >= MAX_CONNECTIONS) ? false : true;
 	}	
 
 	void ConnectionsManager::disconnectClient(int index){					

@@ -168,10 +168,8 @@ int main(int argc, char * argv[])
 		printf("Specify the service as first argument.\n");
 		return 1;
 	}	
-
 	Server server(argv[1]);	
 	*/
-
 	Server server("2811");	
 	server.run();
 	ConnectionsManager::disconnectAllClients();

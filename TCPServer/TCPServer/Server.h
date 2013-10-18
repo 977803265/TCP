@@ -14,7 +14,6 @@
 
 #define DEFAULT_BUFLEN 1024
 #define PORT_BUFLEN 5
-#define MAX_CONNECTIONS 10000
 
 class Server;
 
